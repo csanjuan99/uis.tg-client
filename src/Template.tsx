@@ -79,7 +79,7 @@ const Template = ({ children }: PropsWithChildren) => {
                     className={`${buttonVariants({
                       variant: "link",
                     })}`}
-                    to="https://youtu.be/A2i_13bcRB0"
+                    to="https://youtu.be/_p7EXG3BP48"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -137,7 +137,7 @@ const Template = ({ children }: PropsWithChildren) => {
                       className={`${buttonVariants({
                         variant: "link",
                       })}`}
-                      to="https://youtu.be/A2i_13bcRB0"
+                      to="https://youtu.be/_p7EXG3BP48"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
@@ -198,7 +198,7 @@ const Template = ({ children }: PropsWithChildren) => {
                         className={`${buttonVariants({
                           variant: "link",
                         })}`}
-                        to="https://youtu.be/A2i_13bcRB0"
+                        to="https://youtu.be/_p7EXG3BP48"
                         target="_blank"
                         rel="noopener noreferrer"
                       >
