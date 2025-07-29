@@ -39,23 +39,28 @@ export type SortingState = { sortBy: string | null; sort: "asc" | "desc" };
 // Columnas de la tabla de solicitudes
 export const SolicitudesColumns: ColumnDef<Solicitud>[] = [
   {
-    accessorKey: "period",
     header: "Periodo",
+    accessorKey: "period",
     id: "period",
     cell: ({ row }) =>
       `${row.original.period.year} - ${row.original.period.term}`,
   },
   {
+    header: "Nombre",
     accessorKey: "student.name",
-    header: "Nombre Estudiante",
     id: "student.name",
     cell: ({ row }) =>
       `${row.original.student?.name} ${row.original.student?.lastname}`,
   },
   {
-    header: "Código Estudiante",
+    header: "Código",
     accessorKey: "student.identification",
     id: "student.identification",
+  },
+  {
+    header: "Nivel",
+    accessorKey: "student.level",
+    id: "student.level",
   },
   {
     header: "Franja Horaria",
@@ -76,18 +81,6 @@ export const SolicitudesColumns: ColumnDef<Solicitud>[] = [
           {getStatusLabel(status || "")}
         </Badge>
       );
-    },
-  },
-  {
-    header: "Atendido por",
-    accessorKey: "logs",
-    cell: ({ row }) => {
-      const logs = row.original.logs || [];
-      const lastLog = logs.length > 1 ? logs[logs.length - 1] : null;
-      const user = lastLog?.user;
-      return lastLog && user && user.name && user.lastname
-        ? `${user.name} ${user.lastname}`
-        : "";
     },
   },
   {

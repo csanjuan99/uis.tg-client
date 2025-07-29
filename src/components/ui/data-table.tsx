@@ -56,6 +56,8 @@ interface DataTableProps<TData, TValue> {
   setSelectedStatuses?: (statuses: string[]) => void;
   selectedPeriods?: Period[];
   setSelectedPeriods?: (period: Period[]) => void;
+  selectedLevels?: string[];
+  setSelectedLevels?: (levels: string[]) => void;
   sorting: SortingState;
   setSorting: (sorting: SortingState) => void;
   onRefresh?: () => void;
@@ -73,6 +75,8 @@ export function DataTable<TData extends { status?: string }, TValue>({
   setSelectedStatuses,
   selectedPeriods,
   setSelectedPeriods,
+  selectedLevels,
+  setSelectedLevels,
   sorting,
   setSorting,
   onRefresh,
@@ -91,6 +95,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
     { year: 2025, term: 1 },
     { year: 2025, term: 2 },
   ];
+  const levelOptions = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
   const table = useReactTable({
     data,
@@ -123,6 +128,18 @@ export function DataTable<TData extends { status?: string }, TValue>({
   const removePeriod = (periodToRemove: Period) => {
     setSelectedPeriods?.(
       selectedPeriods?.filter((period) => period !== periodToRemove) || []
+    );
+  };
+
+  const handleLevelChange = (level: string) => {
+    if (selectedLevels && !selectedLevels.includes(level)) {
+      setSelectedLevels?.([...selectedLevels, level]);
+    }
+  };
+
+  const removeLevel = (levelToRemove: string) => {
+    setSelectedLevels?.(
+      selectedLevels?.filter((lvl) => lvl !== levelToRemove) || []
     );
   };
 
@@ -257,6 +274,29 @@ export function DataTable<TData extends { status?: string }, TValue>({
             </SelectContent>
           </Select>
         )}
+        {/* Filtros de nivel */}
+        {selectedLevels && (
+          <Select
+            onValueChange={handleLevelChange}
+            value={selectedLevels.length > 0 ? selectedLevels[0] : ""}
+            name="nivel"
+          >
+            <SelectTrigger className="w-full md:w-2/6">
+              <SelectValue placeholder="Seleccionar Nivel" />
+            </SelectTrigger>
+            <SelectContent>
+              {levelOptions.map((lvl) => (
+                <SelectItem
+                  key={lvl}
+                  value={lvl}
+                  disabled={selectedLevels.includes(lvl)}
+                >
+                  {`Nivel ${lvl}`}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
 
         <div className="flex flex-col md:flex-row gap-x-2 gap-y-2 items-center ">
           <p className="opacity-50 text-sm">
@@ -297,7 +337,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
               }}
               className="h-6 md:h-7 text-xs md:text-sm"
             >
-              Limpiar filtros
+              Limpiar estados
             </Button>
           </div>
         )}
@@ -329,6 +369,37 @@ export function DataTable<TData extends { status?: string }, TValue>({
               className="h-6 md:h-7 text-xs md:text-sm"
             >
               Limpiar periodos
+            </Button>
+          </div>
+        )}
+
+        {selectedLevels && selectedLevels.length > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {selectedLevels.map((level) => (
+              <Badge
+                key={level}
+                variant="secondary"
+                className="px-2 py-1 text-xs md:px-3 md:py-1"
+              >
+                {`Nivel ${level}`}
+                <button
+                  onClick={() => removeLevel(level)}
+                  className="ml-1 md:ml-2 hover:text-red-500"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </Badge>
+            ))}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setSelectedLevels?.([]);
+                setPage(0);
+              }}
+              className="h-6 md:h-7 text-xs md:text-sm"
+            >
+              Limpiar niveles
             </Button>
           </div>
         )}

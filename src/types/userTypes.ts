@@ -15,6 +15,7 @@ export interface UserType {
   createdAt?: string;
   password?: string;
   status?: string;
+  level?: string;
   program?: {
     id: number;
     name: string;

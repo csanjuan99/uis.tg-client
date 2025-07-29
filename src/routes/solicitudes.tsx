@@ -44,6 +44,7 @@ const SolicitudRoute = () => {
   const [selectedPeriods, setSelectedPeriods] = useState<Period[]>([
     { year: 2025, term: 2 },
   ]);
+  const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [refresh, setRefresh] = useState(false);
   const [sorting, setSorting] = useState<SortingState>({
     sortBy: "",
@@ -78,14 +79,15 @@ const SolicitudRoute = () => {
     filter: string,
     statuses: string[],
     sorting: SortingState,
-    periods: Period[]
+    periods: Period[],
+    levels: string[]
   ) => {
     try {
       setRefresh(false);
       setIsLoading(true);
       const params = new URLSearchParams({
         filter: JSON.stringify(
-          buildFilterQuery(filter, paramsFilter, statuses, periods)
+          buildFilterQuery(filter, paramsFilter, statuses, periods, levels)
         ),
         limit: pageLimit.toString(),
         skip: (page * pageLimit).toString(),
@@ -127,7 +129,8 @@ const SolicitudRoute = () => {
         filter !== "" ||
         selectedStatuses.length > 0 ||
         sorting.sortBy ||
-        selectedPeriods.length > 0
+        selectedPeriods.length > 0 ||
+        selectedLevels.length > 0
       ) {
         await auth?.me();
         const data = await fetchSolicitudes(
@@ -135,7 +138,8 @@ const SolicitudRoute = () => {
           filter,
           selectedStatuses,
           sorting,
-          selectedPeriods
+          selectedPeriods,
+          selectedLevels
         );
         setSolicitudes(data);
         return;
@@ -149,7 +153,7 @@ const SolicitudRoute = () => {
 
       // Consultar la API si no hay filtros ni caché
       await auth?.me();
-      const data = await fetchSolicitudes(page, "", [], sorting, []);
+      const data = await fetchSolicitudes(page, "", [], sorting, [], []);
       setCachedSolicitudes((prev) => ({ ...prev, [page]: data }));
       setSolicitudes(data);
       setLastReviewSolicitud(
@@ -161,7 +165,15 @@ const SolicitudRoute = () => {
     };
 
     fetchData();
-  }, [page, filter, selectedStatuses, selectedPeriods, sorting, userId]);
+  }, [
+    page,
+    filter,
+    selectedStatuses,
+    selectedPeriods,
+    selectedLevels,
+    sorting,
+    userId,
+  ]);
 
   useEffect(() => {
     if (!userId || !kind) return;
@@ -188,7 +200,8 @@ const SolicitudRoute = () => {
           filter,
           paramsFilter,
           selectedStatuses,
-          selectedPeriods
+          selectedPeriods,
+          selectedLevels
         );
 
         const { data } =
@@ -212,6 +225,7 @@ const SolicitudRoute = () => {
     filter,
     selectedStatuses,
     selectedPeriods,
+    selectedLevels,
     kind,
     userId,
     paramsFilter,
@@ -263,7 +277,8 @@ const SolicitudRoute = () => {
           filter,
           selectedStatuses,
           sorting,
-          selectedPeriods
+          selectedPeriods,
+          selectedLevels
         );
         setSolicitudes(data);
       } catch (error) {
@@ -289,7 +304,8 @@ const SolicitudRoute = () => {
           filter,
           paramsFilter,
           selectedStatuses,
-          selectedPeriods
+          selectedPeriods,
+          selectedLevels
         );
 
         const { data } =
@@ -394,6 +410,8 @@ const SolicitudRoute = () => {
         setSelectedStatuses={setSelectedStatuses}
         selectedPeriods={selectedPeriods}
         setSelectedPeriods={setSelectedPeriods}
+        selectedLevels={selectedLevels}
+        setSelectedLevels={setSelectedLevels}
         sorting={sorting}
         setSorting={setSorting}
         onRefresh={handleRefresh}
