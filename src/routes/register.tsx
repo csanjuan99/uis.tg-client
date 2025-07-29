@@ -109,7 +109,7 @@ const RegisterRoute = () => {
       if (email.trim()) {
         validateUsername(email);
       }
-    }, 1500); // Espera 1.5 segundos después de que termine de escribir
+    }, 1000); // Espera 1.5 segundos después de que termine de escribir
 
     return () => clearTimeout(timeoutId);
   }, [email]);
@@ -208,7 +208,7 @@ const RegisterRoute = () => {
     <div className="min-h-screen w-full flex items-center justify-center">
       <Loader isLoading={isLoading} />
       <Card className="p-4 min-w-96 space-y-4">
-        <h1 className="text-2xl text-center">Registro de usuario</h1>
+        <h1 className="text-2xl text-center">Registro de estudiante</h1>
         <h4 className="text-xs text-center">
           Crea una cuenta para acceder al sistema de ajuste de matricula
         </h4>

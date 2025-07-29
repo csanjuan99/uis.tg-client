@@ -467,7 +467,8 @@ export default function Calendario({
                   ¿Estás seguro de que deseas enviar la solicitud?, Hasta no
                   aprobarse esta no podras enviar mas solicitudes, debes crear
                   todas las peticiones en una misma solicitud. Por favor, revisa
-                  el resumen de los movimientos realizados.
+                  el resumen de los movimientos realizados. Ten en cuenta que el
+                  envío no garantiza que todas las peticiones serán aprobadas.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

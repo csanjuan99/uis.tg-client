@@ -28,6 +28,10 @@ const SolicitudCrearRoute = () => {
       identification: auth?.user?.identification || "",
       shift: auth?.user?.shift || null,
     },
+    period: {
+      year: 2025,
+      term: 2
+    }
   };
   const [solicitud, setSolicitud] = useState<Solicitud>(emptySolicitud);
   const [materias, setMaterias] = useState<Materia[]>([]);

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button.tsx";
 import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card.tsx";
 import { useToast } from "@/hooks/use-toast";
-import { LogIn, Eye, EyeOff } from "lucide-react";
+import { LogIn, Eye, EyeOff, Mail } from "lucide-react";
 import Loader from "@/components/loader";
 import { UserType } from "../types/userTypes.ts";
 import {
@@ -33,6 +33,7 @@ const LoginRoute = () => {
     useState<boolean>(false);
   const navigate = useNavigate();
   const [validEmail, setValidEmail] = useState<UserType | null>(null);
+  const [emailVerified, setEmailVerified] = useState<boolean>(true);
 
   const { toast } = useToast();
   const auth = useAuth();
@@ -45,6 +46,17 @@ const LoginRoute = () => {
       setIsValidatingUsername(true);
       const emailValidate = await auth.verifyEmail(usernameToValidate);
       setValidEmail(emailValidate);
+      if (!emailValidate.verified) {
+        setEmailVerified(false);
+        toast({
+          variant: "destructive",
+          title: "Correo institucional no verificado",
+          description:
+            "El correo ingresado no está verificado, por favor verifique su correo.",
+        });
+      } else {
+        setEmailVerified(true);
+      }
     } catch (error) {
       console.error("Error validating email:", error);
       toast({
@@ -65,7 +77,7 @@ const LoginRoute = () => {
       if (username.trim()) {
         validateUsername(username);
       }
-    }, 500); // Espera .5 segundo después de que termine de escribir
+    }, 1000); // Espera .5 segundo después de que termine de escribir
 
     return () => clearTimeout(timeoutId);
   }, [username]);
@@ -155,39 +167,56 @@ const LoginRoute = () => {
               autoComplete="email"
               type="email"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                setEmail(e.target.value);
+              }}
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <Label className="font-normal" htmlFor="password">
-              Contraseña
-            </Label>
-            <div className="relative">
-              <Input
-                required
-                id="password"
-                autoComplete="current-password"
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={togglePasswordVisibility}
-                className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:text-gray-700 focus:outline-none"
+          {emailVerified ? (
+            <>
+              <div className="flex flex-col gap-2">
+                <Label className="font-normal" htmlFor="password">
+                  Contraseña
+                </Label>
+                <div className="relative">
+                  <Input
+                    required
+                    id="password"
+                    autoComplete="current-password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:text-gray-700 focus:outline-none"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isLoading || !username || !password || !validEmail}
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-          </div>
-          <Button
-            type="submit"
-            disabled={isLoading || !username || !password || !validEmail}
-          >
-            <LogIn className="mr-2" size={20} />
-            Iniciar sesión
-          </Button>
+                <LogIn className="mr-2" size={20} />
+                Iniciar sesión
+              </Button>
+            </>
+          ) : (
+            <Button
+              type="button"
+              disabled={isLoading || !username || !validEmail}
+              onClick={() => sendForgotPassword()}
+            >
+              <Mail className="mr-2" size={20} />
+              Validar Email
+            </Button>
+          )}
         </form>
         <div className="md:flex w-full justify-between items-center">
           <AlertDialog
