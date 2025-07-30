@@ -398,10 +398,13 @@ const SolicitudDetalleRoute = () => {
                           No cumple requisitos
                         </SelectItem>
                         <SelectItem value="capacidad">
-                          Capacidad de grupo
+                          Capacidad de grupo completada
                         </SelectItem>
                         <SelectItem value="semestre">
                           Semestre superior
+                        </SelectItem>
+                        <SelectItem value="otro">
+                          Otro (revisar observaciones)
                         </SelectItem>
                       </SelectContent>
                     </Select>

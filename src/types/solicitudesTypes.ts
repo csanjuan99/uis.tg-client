@@ -46,7 +46,7 @@ export interface Solicitud {
   }[];
   createdAt?: string;
   updatedAt?: string;
-  period: {
+  period?: {
     year: number;
     term: number;
   };
