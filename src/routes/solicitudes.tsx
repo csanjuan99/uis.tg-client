@@ -94,19 +94,13 @@ const SolicitudRoute = () => {
       setIsLoading(true);
       const params = new URLSearchParams({
         filter: JSON.stringify(
-          buildFilterQuery(
-            filter,
-            paramsFilter,
-            statuses,
-            periods,
-            levels,
-            shifts
-          )
+          buildFilterQuery(filter, paramsFilter, statuses, periods, levels)
         ),
         limit: pageLimit.toString(),
         skip: (page * pageLimit).toString(),
         sort: sorting.sort,
         sortBy: sorting.sortBy || "status",
+        shifts: JSON.stringify(shifts),
       }).toString();
 
       const { data } =
@@ -218,8 +212,7 @@ const SolicitudRoute = () => {
           paramsFilter,
           selectedStatuses,
           selectedPeriods,
-          selectedLevels,
-          selectedShifts
+          selectedLevels
         );
 
         const { data } =
@@ -229,7 +222,10 @@ const SolicitudRoute = () => {
                 headers: { "x-resource-id": userId },
               })
             : await axios.get(`/api/appeal/count`, {
-                params: { filter: JSON.stringify(filterQuery) },
+                params: {
+                  filter: JSON.stringify(filterQuery),
+                  shifts: JSON.stringify(selectedShifts),
+                },
               });
         setTotalSolicitudes(data);
       } catch (error) {
@@ -325,8 +321,7 @@ const SolicitudRoute = () => {
           paramsFilter,
           selectedStatuses,
           selectedPeriods,
-          selectedLevels,
-          selectedShifts
+          selectedLevels
         );
 
         const { data } =
@@ -336,7 +331,10 @@ const SolicitudRoute = () => {
                 headers: { "x-resource-id": userId },
               })
             : await axios.get(`/api/appeal/count`, {
-                params: { filter: JSON.stringify(filterQuery) },
+                params: {
+                  filter: JSON.stringify(filterQuery),
+                  shifts: JSON.stringify(selectedShifts),
+                },
               });
         setTotalSolicitudes(data);
       } catch (error) {

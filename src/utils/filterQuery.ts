@@ -3,8 +3,7 @@ export const buildFilterQuery = (
   params: string[],
   statuses?: string[],
   periods?: { year: number; term: number }[],
-  levels?: string[],
-  shifts?: { day: string; time: string }[]
+  levels?: string[]
 ) => {
   const conditions = [];
 
@@ -23,20 +22,6 @@ export const buildFilterQuery = (
   if (statuses && statuses.length > 0) {
     conditions.push({
       status: { $in: statuses },
-    });
-  }
-
-  // Añadir condiciones de turno si hay turnos seleccionados
-  if (shifts && shifts.length > 0) {
-    const shiftConditions = shifts.map((shift) => ({
-      shift: {
-        day: shift.day,
-        time: shift.time,
-      },
-    }));
-
-    conditions.push({
-      $or: shiftConditions,
     });
   }
 
