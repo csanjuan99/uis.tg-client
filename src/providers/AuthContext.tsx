@@ -19,7 +19,8 @@ type AuthContextType = {
     confirmPassword: string,
     name: string,
     lastname: string,
-    identification: string
+    identification: string,
+    programId: number
   ) => Promise<void>;
   login: (username: string, password: string) => Promise<UserType>;
   logout: () => void;
@@ -42,7 +43,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     program: {
       id: 11,
       name: "INGENIERÍA DE SISTEMAS",
-    }
+    },
   };
 
   const [loggedIn, setLoggedIn] = useState<boolean>(() => {
@@ -74,7 +75,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     confirmPassword: string,
     name: string,
     lastname: string,
-    identification: string
+    identification: string,
+    programId: number
   ): Promise<void> => {
     await axios.post("/api/auth/register", {
       email,
@@ -83,6 +85,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       name,
       lastname,
       identification,
+      program: {
+        id: programId,
+      }
     });
   };
 

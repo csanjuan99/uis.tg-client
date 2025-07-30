@@ -143,7 +143,8 @@ const RegisterRoute = () => {
         confirmPassword,
         name,
         lastname,
-        identification
+        identification,
+        selectedProgram ? parseInt(selectedProgram) : 11 // Default to Ingeniería de Sistemas if no program is selected
       );
       toast({
         title: "Registro exitoso",
