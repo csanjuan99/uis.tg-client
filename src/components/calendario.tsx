@@ -182,7 +182,7 @@ export default function Calendario({
 
     return materiasEnHorario
       .map(({ materia, group, duration }) => {
-        const cellKey = `${materia.sku}-${group.sku}-${day}`;
+        const cellKey = `${materia.sku}-${group.sku}-${day}-${time}`;
 
         if (renderedSlots[day].has(cellKey)) {
           return null;

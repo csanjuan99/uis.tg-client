@@ -306,10 +306,6 @@ const SolicitudCrearRoute = () => {
     );
   };
 
-  useEffect(() => {
-    console.log("Horario:", horario);
-  }, [horario]);
-
   const handleRemoveGrupo = (
     materiaSku: string,
     groupSku?: string,
