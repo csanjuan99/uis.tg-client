@@ -28,6 +28,11 @@ interface Period {
   term: number;
 }
 
+interface Shift {
+  day: string;
+  time: string;
+}
+
 const SolicitudRoute = () => {
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
   const [lastReviewSolicitud, setLastReviewSolicitud] =
@@ -41,6 +46,7 @@ const SolicitudRoute = () => {
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState("");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedShifts, setSelectedShifts] = useState<Shift[]>([]);
   const [selectedPeriods, setSelectedPeriods] = useState<Period[]>([
     { year: 2025, term: 2 },
   ]);
@@ -78,6 +84,7 @@ const SolicitudRoute = () => {
     page: number,
     filter: string,
     statuses: string[],
+    shifts: Shift[],
     sorting: SortingState,
     periods: Period[],
     levels: string[]
@@ -87,7 +94,14 @@ const SolicitudRoute = () => {
       setIsLoading(true);
       const params = new URLSearchParams({
         filter: JSON.stringify(
-          buildFilterQuery(filter, paramsFilter, statuses, periods, levels)
+          buildFilterQuery(
+            filter,
+            paramsFilter,
+            statuses,
+            periods,
+            levels,
+            shifts
+          )
         ),
         limit: pageLimit.toString(),
         skip: (page * pageLimit).toString(),
@@ -128,6 +142,7 @@ const SolicitudRoute = () => {
       if (
         filter !== "" ||
         selectedStatuses.length > 0 ||
+        selectedShifts.length > 0 ||
         sorting.sortBy ||
         selectedPeriods.length > 0 ||
         selectedLevels.length > 0
@@ -137,6 +152,7 @@ const SolicitudRoute = () => {
           page,
           filter,
           selectedStatuses,
+          selectedShifts,
           sorting,
           selectedPeriods,
           selectedLevels
@@ -153,7 +169,7 @@ const SolicitudRoute = () => {
 
       // Consultar la API si no hay filtros ni caché
       await auth?.me();
-      const data = await fetchSolicitudes(page, "", [], sorting, [], []);
+      const data = await fetchSolicitudes(page, "", [], [], sorting, [], []);
       setCachedSolicitudes((prev) => ({ ...prev, [page]: data }));
       setSolicitudes(data);
       setLastReviewSolicitud(
@@ -169,6 +185,7 @@ const SolicitudRoute = () => {
     page,
     filter,
     selectedStatuses,
+    selectedShifts,
     selectedPeriods,
     selectedLevels,
     sorting,
@@ -201,7 +218,8 @@ const SolicitudRoute = () => {
           paramsFilter,
           selectedStatuses,
           selectedPeriods,
-          selectedLevels
+          selectedLevels,
+          selectedShifts
         );
 
         const { data } =
@@ -224,6 +242,7 @@ const SolicitudRoute = () => {
     axios,
     filter,
     selectedStatuses,
+    selectedShifts,
     selectedPeriods,
     selectedLevels,
     kind,
@@ -276,6 +295,7 @@ const SolicitudRoute = () => {
           page,
           filter,
           selectedStatuses,
+          selectedShifts,
           sorting,
           selectedPeriods,
           selectedLevels
@@ -305,7 +325,8 @@ const SolicitudRoute = () => {
           paramsFilter,
           selectedStatuses,
           selectedPeriods,
-          selectedLevels
+          selectedLevels,
+          selectedShifts
         );
 
         const { data } =
@@ -408,6 +429,8 @@ const SolicitudRoute = () => {
         setFilter={setFilter}
         selectedStatuses={selectedStatuses}
         setSelectedStatuses={setSelectedStatuses}
+        selectedShifts={selectedShifts}
+        setSelectedShifts={setSelectedShifts}
         selectedPeriods={selectedPeriods}
         setSelectedPeriods={setSelectedPeriods}
         selectedLevels={selectedLevels}
