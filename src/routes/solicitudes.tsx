@@ -95,13 +95,14 @@ const SolicitudRoute = () => {
       setIsLoading(true);
       const params = new URLSearchParams({
         filter: JSON.stringify(
-          buildFilterQuery(filter, paramsFilter, statuses, periods, levels)
+          buildFilterQuery(filter, paramsFilter, statuses, periods)
         ),
         limit: pageLimit.toString(),
         skip: (page * pageLimit).toString(),
         sort: sorting.sort,
         sortBy: sorting.sortBy || "status",
         shifts: JSON.stringify(shifts),
+        levels: JSON.stringify(levels),
       }).toString();
 
       const { data } =
@@ -212,8 +213,7 @@ const SolicitudRoute = () => {
           filter,
           paramsFilter,
           selectedStatuses,
-          selectedPeriods,
-          selectedLevels
+          selectedPeriods
         );
 
         const { data } =
@@ -226,6 +226,7 @@ const SolicitudRoute = () => {
                 params: {
                   filter: JSON.stringify(filterQuery),
                   shifts: JSON.stringify(selectedShifts),
+                  levels: JSON.stringify(selectedLevels),
                 },
               });
         setTotalSolicitudes(data);
@@ -321,8 +322,7 @@ const SolicitudRoute = () => {
           filter,
           paramsFilter,
           selectedStatuses,
-          selectedPeriods,
-          selectedLevels
+          selectedPeriods
         );
 
         const { data } =
@@ -335,6 +335,7 @@ const SolicitudRoute = () => {
                 params: {
                   filter: JSON.stringify(filterQuery),
                   shifts: JSON.stringify(selectedShifts),
+                  levels: JSON.stringify(selectedLevels),
                 },
               });
         setTotalSolicitudes(data);

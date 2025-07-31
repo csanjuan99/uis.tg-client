@@ -2,8 +2,7 @@ export const buildFilterQuery = (
   search: string,
   params: string[],
   statuses?: string[],
-  periods?: { year: number; term: number }[],
-  levels?: string[]
+  periods?: { year: number; term: number }[]
 ) => {
   const conditions = [];
 
@@ -34,13 +33,6 @@ export const buildFilterQuery = (
 
     conditions.push({
       period: { $in: periodConditions },
-    });
-  }
-
-  // Añadir condiciones de nivel si hay niveles seleccionados
-  if (levels && levels.length > 0) {
-    conditions.push({
-      level: { $in: levels },
     });
   }
 
