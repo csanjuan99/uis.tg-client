@@ -37,13 +37,19 @@ import {
 export type SortingState = { sortBy: string | null; sort: "asc" | "desc" };
 
 // Columnas de la tabla de solicitudes
-export const SolicitudesColumns: ColumnDef<Solicitud>[] = [
+export const SolicitudesColumns = ({
+  eliminarSolicitud,
+  kind,
+}: {
+  eliminarSolicitud: (solicitud: Solicitud) => void;
+  kind: UserType["kind"];
+}): ColumnDef<Solicitud>[] => [
   {
     header: "Periodo",
     accessorKey: "period",
     id: "period",
     cell: ({ row }) =>
-      `${row.original.period.year} - ${row.original.period.term}`,
+      `${row.original.period?.year} - ${row.original.period?.term}`,
   },
   {
     header: "Nombre",
@@ -96,13 +102,43 @@ export const SolicitudesColumns: ColumnDef<Solicitud>[] = [
     header: "Acciones",
     accessorKey: "accion",
     cell: ({ row }) => (
-      <Link
-        to={`/solicitudes/${row.original._id}`}
-        className={buttonVariants({ variant: "link" }) + " font-semibold"}
-      >
-        <Eye />
-        Ver detalles
-      </Link>
+      <div className="flex gap-2">
+        <Link
+          to={`/solicitudes/${row.original._id}`}
+          className={buttonVariants({ variant: "link" }) + " font-semibold"}
+        >
+          <Eye />
+          {(row.original.status !== "PENDING" || kind !== "STUDENT") &&
+            "Ver detalles"}
+        </Link>
+        {/* Botón para eliminar */}
+        {row.original.status === "PENDING" && kind === "STUDENT" && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">
+                <Trash2 />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>¿Eliminar solicitud?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Estás a punto de eliminar la solicitud. Esta acción es
+                  irreversible.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => eliminarSolicitud(row.original)}
+                >
+                  Eliminar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </div>
     ),
   },
 ];
