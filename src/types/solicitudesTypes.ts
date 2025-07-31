@@ -61,6 +61,11 @@ export type dayType =
 
 export type RequestStatus = "PENDING" | "APPROVED" | "REJECTED";
 
+export type Shift = {
+  day: dayType;
+  time: "AM" | "PM";
+};
+
 // Función para convertir UTC a hora colombiana
 export const convertToColombianTime = (utcDate: string): number => {
   const date = new Date(utcDate);

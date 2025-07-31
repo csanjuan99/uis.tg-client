@@ -22,6 +22,7 @@ import {
 import { buildFilterQuery } from "@/utils/filterQuery";
 import { Plus } from "lucide-react";
 import Loader from "@/components/loader";
+import { Shift } from "../types/solicitudesTypes";
 
 interface Period {
   year: number;
@@ -41,6 +42,7 @@ const SolicitudRoute = () => {
   const [page, setPage] = useState(0);
   const [filter, setFilter] = useState("");
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedShifts, setSelectedShifts] = useState<Shift[]>([]);
   const [selectedPeriods, setSelectedPeriods] = useState<Period[]>([
     { year: 2025, term: 2 },
   ]);
@@ -78,6 +80,7 @@ const SolicitudRoute = () => {
     page: number,
     filter: string,
     statuses: string[],
+    shifts: Shift[],
     sorting: SortingState,
     periods: Period[],
     levels: string[]
@@ -93,6 +96,7 @@ const SolicitudRoute = () => {
         skip: (page * pageLimit).toString(),
         sort: sorting.sort,
         sortBy: sorting.sortBy || "status",
+        shifts: JSON.stringify(shifts),
       }).toString();
 
       const { data } =
@@ -128,6 +132,7 @@ const SolicitudRoute = () => {
       if (
         filter !== "" ||
         selectedStatuses.length > 0 ||
+        selectedShifts.length > 0 ||
         sorting.sortBy ||
         selectedPeriods.length > 0 ||
         selectedLevels.length > 0
@@ -137,6 +142,7 @@ const SolicitudRoute = () => {
           page,
           filter,
           selectedStatuses,
+          selectedShifts,
           sorting,
           selectedPeriods,
           selectedLevels
@@ -153,7 +159,7 @@ const SolicitudRoute = () => {
 
       // Consultar la API si no hay filtros ni caché
       await auth?.me();
-      const data = await fetchSolicitudes(page, "", [], sorting, [], []);
+      const data = await fetchSolicitudes(page, "", [], [], sorting, [], []);
       setCachedSolicitudes((prev) => ({ ...prev, [page]: data }));
       setSolicitudes(data);
       setLastReviewSolicitud(
@@ -169,6 +175,7 @@ const SolicitudRoute = () => {
     page,
     filter,
     selectedStatuses,
+    selectedShifts,
     selectedPeriods,
     selectedLevels,
     sorting,
@@ -211,7 +218,10 @@ const SolicitudRoute = () => {
                 headers: { "x-resource-id": userId },
               })
             : await axios.get(`/api/appeal/count`, {
-                params: { filter: JSON.stringify(filterQuery) },
+                params: {
+                  filter: JSON.stringify(filterQuery),
+                  shifts: JSON.stringify(selectedShifts),
+                },
               });
         setTotalSolicitudes(data);
       } catch (error) {
@@ -224,6 +234,7 @@ const SolicitudRoute = () => {
     axios,
     filter,
     selectedStatuses,
+    selectedShifts,
     selectedPeriods,
     selectedLevels,
     kind,
@@ -276,6 +287,7 @@ const SolicitudRoute = () => {
           page,
           filter,
           selectedStatuses,
+          selectedShifts,
           sorting,
           selectedPeriods,
           selectedLevels
@@ -315,7 +327,10 @@ const SolicitudRoute = () => {
                 headers: { "x-resource-id": userId },
               })
             : await axios.get(`/api/appeal/count`, {
-                params: { filter: JSON.stringify(filterQuery) },
+                params: {
+                  filter: JSON.stringify(filterQuery),
+                  shifts: JSON.stringify(selectedShifts),
+                },
               });
         setTotalSolicitudes(data);
       } catch (error) {
@@ -435,6 +450,8 @@ const SolicitudRoute = () => {
         setFilter={setFilter}
         selectedStatuses={selectedStatuses}
         setSelectedStatuses={setSelectedStatuses}
+        selectedShifts={selectedShifts}
+        setSelectedShifts={setSelectedShifts}
         selectedPeriods={selectedPeriods}
         setSelectedPeriods={setSelectedPeriods}
         selectedLevels={selectedLevels}
