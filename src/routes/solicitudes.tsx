@@ -22,15 +22,11 @@ import {
 import { buildFilterQuery } from "@/utils/filterQuery";
 import { Plus } from "lucide-react";
 import Loader from "@/components/loader";
+import { Shift } from "../types/solicitudesTypes";
 
 interface Period {
   year: number;
   term: number;
-}
-
-interface Shift {
-  day: string;
-  time: string;
 }
 
 const SolicitudRoute = () => {

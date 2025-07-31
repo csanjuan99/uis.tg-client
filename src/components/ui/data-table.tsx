@@ -35,18 +35,14 @@ import {
 } from "@/components/ui/pagination";
 import { Badge } from "@/components/ui/badge";
 import { X, ArrowUp, ArrowDown, ArrowUpDown, RefreshCcw } from "lucide-react";
-import { getStatusLabel } from "@/types/solicitudesTypes";
+import { getShiftLabel, getStatusLabel } from "@/types/solicitudesTypes";
 import { SortingState } from "@/types/tableTypes";
 import { useAuth } from "@/providers/AuthContext.tsx";
+import { Shift, dayType } from "@/types/solicitudesTypes";
 
 interface Period {
   year: number;
   term: number;
-}
-
-interface Shift {
-  day: string;
-  time: string;
 }
 
 interface DataTableProps<TData, TValue> {
@@ -104,23 +100,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
     { year: 2025, term: 1 },
     { year: 2025, term: 2 },
   ];
-  const shiftsOptions = [
-    {
-      day: "MONDAY",
-      time: "AM",
-    },
-    {
-      day: "MONDAY",
-      time: "PM",
-    },
-    {
-      day: "TUESDAY",
-      time: "AM",
-    },
-    {
-      day: "TUESDAY",
-      time: "PM",
-    },
+  const shiftsOptions: Shift[] = [
     {
       day: "WEDNESDAY",
       time: "AM",
@@ -268,8 +248,8 @@ export function DataTable<TData extends { status?: string }, TValue>({
   const pages = getSiblingPages(page, totalPages);
 
   return (
-    <div className="space-y-4 md:space-y-6">
-      <div className="flex flex-col md:flex-row items-center justify-between py-2 md:py-4 gap-4 md:gap-y-0 md:gap-x-4">
+    <div className="space-y-4 lg:space-y-6">
+      <div className="flex flex-col lg:flex-row items-center justify-between py-2 lg:py-4 gap-4 lg:gap-y-0 lg:gap-x-4">
         <Input
           type="search"
           id="buscar"
@@ -277,7 +257,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
           value={filterInput}
           onChange={(e) => setFilterInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="md:w-2/6"
+          className="lg:w-2/6"
         />
         {/* Filtro de estados */}
         {selectedStatuses && (
@@ -286,7 +266,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
             value={selectedStatuses.length > 0 ? selectedStatuses[0] : ""}
             name="estados"
           >
-            <SelectTrigger className="w-full md:w-2/6">
+            <SelectTrigger className="w-full lg:w-2/6">
               <SelectValue placeholder="Seleccionar Estados" />
             </SelectTrigger>
             <SelectContent>
@@ -302,12 +282,16 @@ export function DataTable<TData extends { status?: string }, TValue>({
             </SelectContent>
           </Select>
         )}
-        {/* Filtro de turnos */}
+        {/* Filtro de franjas */}
         {selectedShifts && kind == "ROOT" && (
           <Select
             onValueChange={(value) => {
               const [day, time] = value.split("-");
-              handleShiftChange({ day, time });
+              const shift: Shift = {
+                day: day as dayType,
+                time: time as "AM" | "PM",
+              };
+              handleShiftChange(shift);
             }}
             value={
               selectedShifts.length > 0
@@ -316,8 +300,8 @@ export function DataTable<TData extends { status?: string }, TValue>({
             }
             name="turnos"
           >
-            <SelectTrigger className="w-full md:w-2/6">
-              <SelectValue placeholder="Seleccionar Turnos" />
+            <SelectTrigger className="w-full lg:w-2/6">
+              <SelectValue placeholder="Seleccionar Franjas" />
             </SelectTrigger>
             <SelectContent>
               {shiftsOptions.map((shift) => (
@@ -328,7 +312,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
                     (s) => s.day === shift.day && s.time === shift.time
                   )}
                 >
-                  {`${shift.day} - ${shift.time}`}
+                  {getShiftLabel(shift)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -351,7 +335,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
             }
             name="periodo"
           >
-            <SelectTrigger className="w-full md:w-2/6">
+            <SelectTrigger className="w-full lg:w-2/6">
               <SelectValue placeholder="Seleccionar Periodos" />
             </SelectTrigger>
             <SelectContent>
@@ -376,7 +360,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
             value={selectedLevels.length > 0 ? selectedLevels[0] : ""}
             name="nivel"
           >
-            <SelectTrigger className="w-full md:w-2/6">
+            <SelectTrigger className="w-full lg:w-2/6">
               <SelectValue placeholder="Seleccionar Nivel" />
             </SelectTrigger>
             <SelectContent>
