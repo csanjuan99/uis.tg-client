@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import {
   Table,
@@ -20,10 +19,18 @@ import {
   AlertDialogTrigger,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
+import { Pen, Moon, Sun } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "./ui/textarea";
 import { Materia } from "@/types/materiaTypes";
-import { Solicitud } from "@/types/solicitudesTypes";
+import { dayType, getShiftLabel, Solicitud } from "@/types/solicitudesTypes";
 import { Trash2, Send, X, PlusCircle, MinusCircle, Repeat } from "lucide-react";
+import { useAuth } from "@/providers/AuthContext";
+import Franjas from "./franjas";
+import Loader from "./loader";
+import { useToast } from "@/hooks/use-toast";
+import { useAxios } from "../providers/AxiosContext";
+import { AxiosInstance } from "axios";
 
 interface CalendarioProps {
   horario: Materia[];
@@ -48,6 +55,8 @@ export default function Calendario({
   modalOpen,
   setAsk,
 }: CalendarioProps) {
+  const axios: AxiosInstance = useAxios();
+  const { toast } = useToast();
   const timeSlots = [
     "6-7",
     "7-8",
@@ -68,6 +77,12 @@ export default function Calendario({
   ];
   const days = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isModalShiftOpen, setIsModalShiftOpen] = useState(false);
+  const auth = useAuth();
+  const userId = auth?.user?.id;
+  const userShift = auth?.user?.shift || { day: "WEDNESDAY", time: "AM" };
+  const [isLoading, setIsLoading] = useState(false);
+  const [shift, setShift] = useState<{ day: string; time: string }>(userShift);
 
   useEffect(() => {
     setIsDialogOpen(!modalOpen || false);
@@ -254,11 +269,45 @@ export default function Calendario({
       .filter(Boolean);
   }
 
+  const handleUserShift = async () => {
+    if (!shift || !userId) return;
+
+    try {
+      setIsLoading(true);
+      await axios.put(
+        `/api/student`,
+        { shift },
+        { headers: { "x-resource-id": userId } }
+      );
+      await auth.me();
+      setIsModalShiftOpen(false);
+      toast({
+        title: "Franja horaria actualizada",
+        description: "La franja horaria ha sido actualizada exitosamente.",
+      });
+    } catch (error) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } }).response?.data
+          ?.message ||
+        (error as Error).message ||
+        "Ha ocurrido un error inesperado";
+
+      toast({
+        variant: "destructive",
+        title: "Actualizar franja horaria fallida",
+        description: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Card className="w-full overflow-x-auto">
+      <Loader isLoading={isLoading} />
       <CardContent className="!p-0">
+        {/* Tabla de horarios */}
         <div className="min-w-[600px]">
-          {/* Ensures horizontal scrolling on small screens */}
           <Table className="table-fixed w-full">
             <TableHeader>
               <TableRow>
@@ -294,6 +343,7 @@ export default function Calendario({
             </TableBody>
           </Table>
         </div>
+        {/* Resumen de movimientos */}
         <div className="mt-2 md:mt-4 px-2">
           <AlertDialog
             open={isDialogOpen}
@@ -313,6 +363,7 @@ export default function Calendario({
                 <AlertDialogDescription className="text-xs md:text-sm">
                   {horarioInicial.length > 0 ? (
                     <>
+                      {/* Mostrar resumen de peticiones */}
                       <div className="flex flex-col gap-y-1 md:gap-y-2 mb-2 md:mb-4">
                         {solicitudes &&
                           solicitudes?.length > 0 &&
@@ -434,6 +485,7 @@ export default function Calendario({
                           />
                         )}
                       </div>
+                      {/* Mensaje de confirmación */}
                       <p>
                         ¿Estás seguro de que deseas enviar la solicitud?, Hasta
                         no aprobarse esta no podras enviar mas solicitudes,
@@ -442,6 +494,31 @@ export default function Calendario({
                         realizados. Ten en cuenta que el envío no garantiza que
                         todas las peticiones serán aprobadas.
                       </p>
+                      {/* Mostrar franja horaria */}
+                      <div>
+                        <Card
+                          key={shift.day}
+                          className="flex items-center justify-evenly my-2 py-2"
+                        >
+                          {shift.time === "AM" ? <Sun /> : <Moon />}
+                          {getShiftLabel({
+                            day: shift.day as dayType,
+                            time: shift.time as "AM" | "PM",
+                          })}
+                          <Button
+                            className="text-sm"
+                            variant={"default"}
+                            onClick={() => setIsModalShiftOpen(true)}
+                          >
+                            <Pen />
+                          </Button>
+                        </Card>
+                        <p>
+                          Verifique que su franja horaria sea acorde al sistema
+                          de estudiantes ya que la efectividad de la solicitud
+                          depende de esto.
+                        </p>
+                      </div>
                     </>
                   ) : (
                     horario.length > 0 && (
@@ -496,6 +573,14 @@ export default function Calendario({
             </AlertDialogContent>
           </AlertDialog>
         </div>
+        {/* Cambio de franja horaria */}
+        <Franjas
+          open={isModalShiftOpen}
+          onOpenChange={setIsModalShiftOpen}
+          shift={shift}
+          setShift={setShift}
+          onConfirm={handleUserShift}
+        />
       </CardContent>
     </Card>
   );

@@ -7,19 +7,9 @@ import { Materia } from "@/types/materiaTypes";
 import { useToast } from "@/hooks/use-toast";
 import Materias from "@/components/materias";
 import Calendario from "@/components/calendario";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import Franjas from "@/components/franjas";
 import { isTimeOverlap } from "@/utils/tiempoEspera";
 import Loader from "@/components/loader";
-import { Sun, Moon } from "lucide-react";
 
 const HorarioRoute = () => {
   const axios: AxiosInstance = useAxios();
@@ -38,12 +28,6 @@ const HorarioRoute = () => {
     userShift || { day: "", time: "" }
   );
   const navigate = useNavigate();
-
-  const daysAndShifts = [
-    { day: "WEDNESDAY", label: "Miércoles" },
-    { day: "THURSDAY", label: "Jueves" },
-    { day: "FRIDAY", label: "Viernes" },
-  ];
 
   useEffect(() => {
     if (userShift && userShift.day && userShift.time) {
@@ -413,56 +397,13 @@ const HorarioRoute = () => {
   return (
     <div className="w-full">
       <Loader isLoading={isLoading} />
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Selección de Franja Horaria</DialogTitle>
-            <DialogDescription>
-              Elige el día y la franja horaria que te fue asignada en el sistema
-              de estudiantes UIS.
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-y-4 md:gap-4 mt-4">
-                {daysAndShifts.map(({ day, label }) => (
-                  <Card key={day}>
-                    <CardHeader className="text-center !py-2 md:!py-4">
-                      <CardTitle>{label}</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex flex-col gap-y-2">
-                      <Button
-                        className="text-sm"
-                        variant={
-                          shift && shift.day === day && shift.time === "AM"
-                            ? "default"
-                            : "secondary"
-                        }
-                        onClick={() => setShift({ day, time: "AM" })}
-                      >
-                        <Sun />
-                        Mañana
-                      </Button>
-                      <Button
-                        className="text-sm"
-                        variant={
-                          shift && shift.day === day && shift.time === "PM"
-                            ? "default"
-                            : "secondary"
-                        }
-                        onClick={() => setShift({ day, time: "PM" })}
-                      >
-                        <Moon />
-                        Tarde
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-
-          <DialogFooter>
-            <Button onClick={() => handleUserShift()}>Confirmar</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Franjas
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        shift={shift}
+        setShift={setShift}
+        onConfirm={handleUserShift}
+      />
       <h1 className="text-2xl font-bold">Horario del estudiante</h1>
       <div className="flex flex-col-reverse md:flex-row w-full md:my-4 gap-x-8  gap-y-2 justify-between">
         <div className="flex-1 w-full md:w-4/5">

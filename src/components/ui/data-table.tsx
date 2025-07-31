@@ -429,7 +429,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
                 variant="secondary"
                 className="px-2 py-1 text-xs md:px-3 md:py-1"
               >
-                {`${shift.day} - ${shift.time}`}
+                {getShiftLabel(shift)}
                 <button
                   onClick={() => removeShift(shift)}
                   className="ml-1 md:ml-2 hover:text-red-500"
