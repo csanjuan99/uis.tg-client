@@ -26,6 +26,7 @@ type AuthContextType = {
   logout: () => void;
   me: () => Promise<UserType>;
   verifyEmail: (email: string) => Promise<UserType>;
+  refreshToken: () => Promise<UserType>;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -138,6 +139,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
+  const refreshToken = async (): Promise<UserType> => {
+    const oldToken = localStorage.getItem("access_token");
+    const { data } = await axios.get(`/api/auth/refresh-token?t=${oldToken}`);
+    localStorage.setItem("access_token", data.access_token);
+    const userData = await me();
+    return userData;
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     if (token) {
@@ -163,6 +172,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         logout,
         me,
         verifyEmail,
+        refreshToken,
       }}
     >
       {children}

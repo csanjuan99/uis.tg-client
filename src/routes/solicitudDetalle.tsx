@@ -254,6 +254,8 @@ const SolicitudDetalleRoute = () => {
         title: "Solicitud completada",
         description: "La solicitud ha sido marcada como completada",
       });
+      // refrescamos el token al completar solicitud
+      await auth.refreshToken();
       navigate("/solicitudes");
     } catch (error) {
       const errorMessage =
