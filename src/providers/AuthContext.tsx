@@ -87,7 +87,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       identification,
       program: {
         id: programId,
-      }
+      },
     });
   };
 
@@ -125,6 +125,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoggedIn(false);
     setUser(emptyUser);
     localStorage.removeItem("access_token");
+    sessionStorage.clear(); // Limpiamos sessionStorage con filtros de solicitudes
   };
 
   const verifyEmail = async (username: string): Promise<UserType> => {

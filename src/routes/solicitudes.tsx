@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { useToast } from "@/hooks/use-toast";
+import { useFilterStorage } from "../utils/filterStorage";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,19 +40,23 @@ const SolicitudRoute = () => {
     Record<number, Solicitud[]>
   >({});
   const [totalSolicitudes, setTotalSolicitudes] = useState(0);
-  const [page, setPage] = useState(0);
-  const [filter, setFilter] = useState("");
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [selectedShifts, setSelectedShifts] = useState<Shift[]>([]);
-  const [selectedPeriods, setSelectedPeriods] = useState<Period[]>([
-    { year: 2025, term: 2 },
-  ]);
-  const [selectedLevels, setSelectedLevels] = useState<string[]>([]);
   const [refresh, setRefresh] = useState(false);
-  const [sorting, setSorting] = useState<SortingState>({
-    sortBy: "",
-    sort: "asc",
-  });
+  const {
+    page,
+    setPage,
+    filter,
+    setFilter,
+    selectedStatuses,
+    setSelectedStatuses,
+    selectedShifts,
+    setSelectedShifts,
+    selectedPeriods,
+    setSelectedPeriods,
+    selectedLevels,
+    setSelectedLevels,
+    sorting,
+    setSorting,
+  } = useFilterStorage();
   const [isLoading, setIsLoading] = useState(true);
   const axios: AxiosInstance = useAxios();
   const auth = useAuth();

@@ -389,19 +389,19 @@ export function DataTable<TData extends { status?: string }, TValue>({
         </div>
       </div>
 
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col gap-y-2 lg:flex-row items-center justify-between mb-4">
         {selectedStatuses && selectedStatuses.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1">
             {selectedStatuses.map((status) => (
               <Badge
                 key={status}
                 variant="secondary"
-                className="px-2 py-1 text-xs md:px-3 md:py-1"
+                className="px-2 py-1 text-xs"
               >
                 {getStatusLabel(status)}
                 <button
                   onClick={() => removeStatus(status)}
-                  className="ml-1 md:ml-2 hover:text-red-500"
+                  className="ml-1 hover:text-red-500"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -414,7 +414,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
                 setSelectedStatuses?.([]);
                 setPage(0);
               }}
-              className="h-6 md:h-7 text-xs md:text-sm"
+              className="h-6 text-xs"
             >
               Limpiar estados
             </Button>
@@ -422,17 +422,17 @@ export function DataTable<TData extends { status?: string }, TValue>({
         )}
 
         {selectedShifts && selectedShifts.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1">
             {selectedShifts.map((shift) => (
               <Badge
                 key={`${shift.day}-${shift.time}`}
                 variant="secondary"
-                className="px-2 py-1 text-xs md:px-3 md:py-1"
+                className="px-2 py-1 text-xs"
               >
                 {getShiftLabel(shift)}
                 <button
                   onClick={() => removeShift(shift)}
-                  className="ml-1 md:ml-2 hover:text-red-500"
+                  className="ml-1 hover:text-red-500"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -445,7 +445,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
                 setSelectedShifts?.([]);
                 setPage(0);
               }}
-              className="h-6 md:h-7 text-xs md:text-sm"
+              className="h-6 text-xs"
             >
               Limpiar franjas
             </Button>
@@ -453,17 +453,17 @@ export function DataTable<TData extends { status?: string }, TValue>({
         )}
 
         {selectedPeriods && selectedPeriods.length > 0 && kind === "ROOT" && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1">
             {selectedPeriods.map((period) => (
               <Badge
                 key={`${period.year}-${period.term}`}
                 variant="secondary"
-                className="px-2 py-1 text-xs md:px-3 md:py-1"
+                className="px-2 py-1 text-xs"
               >
                 {`${period.year} - ${period.term}`}
                 <button
                   onClick={() => removePeriod(period)}
-                  className="ml-1 md:ml-2 hover:text-red-500"
+                  className="ml-1 hover:text-red-500"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -476,7 +476,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
                 setSelectedPeriods?.([]);
                 setPage(0);
               }}
-              className="h-6 md:h-7 text-xs md:text-sm"
+              className="h-6 text-xs"
             >
               Limpiar periodos
             </Button>
@@ -484,17 +484,17 @@ export function DataTable<TData extends { status?: string }, TValue>({
         )}
 
         {selectedLevels && selectedLevels.length > 0 && (
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1">
             {selectedLevels.map((level) => (
               <Badge
                 key={level}
                 variant="secondary"
-                className="px-2 py-1 text-xs md:px-3 md:py-1"
+                className="px-2 py-1 text-xs"
               >
                 {`Nivel ${level}`}
                 <button
                   onClick={() => removeLevel(level)}
-                  className="ml-1 md:ml-2 hover:text-red-500"
+                  className="ml-1 hover:text-red-500"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -507,7 +507,7 @@ export function DataTable<TData extends { status?: string }, TValue>({
                 setSelectedLevels?.([]);
                 setPage(0);
               }}
-              className="h-6 md:h-7 text-xs md:text-sm"
+              className="h-6 text-xs"
             >
               Limpiar niveles
             </Button>
