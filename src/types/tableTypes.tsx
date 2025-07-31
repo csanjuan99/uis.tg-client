@@ -54,14 +54,14 @@ export const SolicitudesColumns = ({
   {
     header: "Nombre",
     accessorKey: "student.name",
-    id: "student.name",
+    id: "logs.user.name",
     cell: ({ row }) =>
       `${row.original.student?.name} ${row.original.student?.lastname}`,
   },
   {
     header: "Código",
     accessorKey: "student.identification",
-    id: "student.identification",
+    id: "logs.user.identification",
   },
   {
     header: "Nivel",
@@ -71,7 +71,7 @@ export const SolicitudesColumns = ({
   {
     header: "Franja Horaria",
     accessorKey: "student.shift.day",
-    id: "logs.user.shift.day",
+    id: "student.shift.day",
     cell: ({ row }) =>
       getShiftLabel(
         row.original?.student?.shift || { day: "THURSDAY", time: "AM" }

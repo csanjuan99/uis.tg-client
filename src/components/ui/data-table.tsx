@@ -531,7 +531,12 @@ export function DataTable<TData extends { status?: string }, TValue>({
                           header.id === sorting.sortBy ? "font-semibold" : ""
                         } text-xs md:text-base`}
                         onClick={() => {
-                          if (header.id === "accion") return;
+                          if (
+                            header.id === "accion" ||
+                            header.id === "student.level" ||
+                            header.id === "student.shift.day"
+                          )
+                            return;
                           setSorting({
                             sortBy: header.id,
                             sort: sorting.sort === "asc" ? "desc" : "asc",
@@ -542,7 +547,9 @@ export function DataTable<TData extends { status?: string }, TValue>({
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {header.id === "accion" ? null : header.id !==
+                        {header.id === "accion" ||
+                        header.id === "student.level" ||
+                        header.id === "student.shift.day" ? null : header.id !==
                           sorting.sortBy ? (
                           <ArrowUpDown size={16} />
                         ) : sorting.sort === "asc" ? (
