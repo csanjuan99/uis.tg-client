@@ -350,6 +350,33 @@ const SolicitudRoute = () => {
     setRefresh((prev) => !prev);
   };
 
+  const eliminarSolicitud = async (solicitud: Solicitud) => {
+    try {
+      setIsLoading(true);
+      await axios.delete(`/api/appeal/${solicitud._id}`, {
+        headers: { "x-resource-id": userId },
+      });
+      toast({
+        title: "Solicitud eliminada",
+        description: "La solicitud ha sido eliminada correctamente.",
+      });
+    } catch (error) {
+      const errorMessage =
+        (error as { response?: { data?: { message?: string } } }).response?.data
+          ?.message ||
+        (error as Error).message ||
+        "Ha ocurrido un error al eliminar la solicitud";
+      toast({
+        variant: "destructive",
+        title: "Error al eliminar solicitud",
+        description: errorMessage,
+      });
+    } finally {
+      handleRefresh();
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="container mx-auto">
       <Loader isLoading={isLoading} />
@@ -419,7 +446,7 @@ const SolicitudRoute = () => {
       </div>
       <DataTable
         data={solicitudes}
-        columns={SolicitudesColumns}
+        columns={SolicitudesColumns({ eliminarSolicitud, kind })}
         rows={totalSolicitudes}
         page={page}
         setPage={setPage}

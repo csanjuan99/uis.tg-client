@@ -17,7 +17,18 @@ export interface Materia {
       professor?: string;
     }[];
   }[];
-  group?: string;
+  group?: {
+    sku: string;
+    capacity?: number;
+    enrolled?: number;
+    schedule?: {
+      day: string;
+      time: string;
+      building?: string;
+      room?: string;
+      professor?: string;
+    }[];
+  };
   createdAt?: string;
   updatedAt?: string;
 }

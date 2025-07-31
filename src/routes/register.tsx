@@ -76,7 +76,6 @@ const RegisterRoute = () => {
 
     try {
       const emailValidate = await auth.verifyEmail(usernameToValidate);
-      console.log("Email validation result:", emailValidate);
       setName(emailValidate.name || "");
       setLastname(emailValidate.lastname || "");
       setIdentification(emailValidate.identification || "");

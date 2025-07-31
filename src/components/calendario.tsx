@@ -182,7 +182,7 @@ export default function Calendario({
 
     return materiasEnHorario
       .map(({ materia, group, duration }) => {
-        const cellKey = `${materia.sku}-${group.sku}-${day}`;
+        const cellKey = `${materia.sku}-${group.sku}-${day}-${time}`;
 
         if (renderedSlots[day].has(cellKey)) {
           return null;
@@ -312,86 +312,55 @@ export default function Calendario({
                 </AlertDialogTitle>
                 <AlertDialogDescription className="text-xs md:text-sm">
                   {horarioInicial.length > 0 ? (
-                    <div className="flex flex-col gap-y-1 md:gap-y-2 mb-2 md:mb-4">
-                      {solicitudes &&
-                        solicitudes?.length > 0 &&
-                        solicitudes.map((solicitud) =>
-                          solicitud.from && !solicitud.to ? (
-                            <div
-                              key={solicitud.from.sku}
-                              className="flex gap-1 md:gap-2 text-xs md:text-lg items-center justify-between bg-template px-1 md:px-2 py-0.5 md:py-1 rounded-md"
-                            >
-                              <div className="flex gap-1 md:gap-2 items-center">
-                                <MinusCircle
-                                  size={16}
-                                  className="text-red-500"
-                                />
-                                <p className="text-xs md:text-base">
-                                  Eliminada: {solicitud.from.name} (
-                                  {solicitud.from.group})
-                                </p>
-                              </div>
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="!h-6 !w-6"
-                                onClick={() => {
-                                  if (solicitud.from) {
-                                    handleRemoveMateria(
-                                      solicitud.from.sku,
-                                      solicitud.from.group,
-                                      true
-                                    );
-                                  }
-                                }}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          ) : solicitud.to && !solicitud.from ? (
-                            <div
-                              key={solicitud.to[0].sku}
-                              className="flex gap-1 md:gap-2 text-xs md:text-lg items-center justify-between bg-template px-1 md:px-2 py-0.5 md:py-1 rounded-md"
-                            >
-                              <div className="flex gap-1 md:gap-2 items-center">
-                                <PlusCircle
-                                  size={16}
-                                  className="text-green-500"
-                                />
-                                <p className="text-xs md:text-base">
-                                  Añadida: {solicitud.to[0].name} (
-                                  {solicitud.to.map((m) => m.group).join(", ")})
-                                </p>
-                              </div>
-                              <Button
-                                size="icon"
-                                variant="ghost"
-                                className="!h-6 !w-6"
-                                onClick={() => {
-                                  if (solicitud.to) {
-                                    handleRemoveMateria(
-                                      solicitud.to[0].sku,
-                                      solicitud.to[0].group,
-                                      false
-                                    );
-                                  }
-                                }}
-                              >
-                                <X className="h-4 w-4" />
-                              </Button>
-                            </div>
-                          ) : (
-                            solicitud.to &&
-                            solicitud.from && (
+                    <>
+                      <div className="flex flex-col gap-y-1 md:gap-y-2 mb-2 md:mb-4">
+                        {solicitudes &&
+                          solicitudes?.length > 0 &&
+                          solicitudes.map((solicitud) =>
+                            solicitud.from && !solicitud.to ? (
                               <div
                                 key={solicitud.from.sku}
                                 className="flex gap-1 md:gap-2 text-xs md:text-lg items-center justify-between bg-template px-1 md:px-2 py-0.5 md:py-1 rounded-md"
                               >
                                 <div className="flex gap-1 md:gap-2 items-center">
-                                  <Repeat size={16} className="text-blue-500" />
+                                  <MinusCircle
+                                    size={16}
+                                    className="text-red-500"
+                                  />
                                   <p className="text-xs md:text-base">
-                                    Cambio de grupo: {solicitud.from.name} (
-                                    {solicitud.from.group}) a (
+                                    Eliminada: {solicitud.from.name} (
+                                    {solicitud.from.group})
+                                  </p>
+                                </div>
+                                <Button
+                                  size="icon"
+                                  variant="ghost"
+                                  className="!h-6 !w-6"
+                                  onClick={() => {
+                                    if (solicitud.from) {
+                                      handleRemoveMateria(
+                                        solicitud.from.sku,
+                                        solicitud.from.group,
+                                        true
+                                      );
+                                    }
+                                  }}
+                                >
+                                  <X className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            ) : solicitud.to && !solicitud.from ? (
+                              <div
+                                key={solicitud.to[0].sku}
+                                className="flex gap-1 md:gap-2 text-xs md:text-lg items-center justify-between bg-template px-1 md:px-2 py-0.5 md:py-1 rounded-md"
+                              >
+                                <div className="flex gap-1 md:gap-2 items-center">
+                                  <PlusCircle
+                                    size={16}
+                                    className="text-green-500"
+                                  />
+                                  <p className="text-xs md:text-base">
+                                    Añadida: {solicitud.to[0].name} (
                                     {solicitud.to
                                       .map((m) => m.group)
                                       .join(", ")}
@@ -403,11 +372,10 @@ export default function Calendario({
                                   variant="ghost"
                                   className="!h-6 !w-6"
                                   onClick={() => {
-                                    if (solicitud.from && solicitud.to) {
+                                    if (solicitud.to) {
                                       handleRemoveMateria(
-                                        solicitud.from.sku,
-                                        solicitud.to[solicitud.to.length - 1]
-                                          .group,
+                                        solicitud.to[0].sku,
+                                        solicitud.to[0].group,
                                         false
                                       );
                                     }
@@ -416,17 +384,65 @@ export default function Calendario({
                                   <X className="h-4 w-4" />
                                 </Button>
                               </div>
+                            ) : (
+                              solicitud.to &&
+                              solicitud.from && (
+                                <div
+                                  key={solicitud.from.sku}
+                                  className="flex gap-1 md:gap-2 text-xs md:text-lg items-center justify-between bg-template px-1 md:px-2 py-0.5 md:py-1 rounded-md"
+                                >
+                                  <div className="flex gap-1 md:gap-2 items-center">
+                                    <Repeat
+                                      size={16}
+                                      className="text-blue-500"
+                                    />
+                                    <p className="text-xs md:text-base">
+                                      Cambio de grupo: {solicitud.from.name} (
+                                      {solicitud.from.group}) a (
+                                      {solicitud.to
+                                        .map((m) => m.group)
+                                        .join(", ")}
+                                      )
+                                    </p>
+                                  </div>
+                                  <Button
+                                    size="icon"
+                                    variant="ghost"
+                                    className="!h-6 !w-6"
+                                    onClick={() => {
+                                      if (solicitud.from && solicitud.to) {
+                                        handleRemoveMateria(
+                                          solicitud.from.sku,
+                                          solicitud.to[solicitud.to.length - 1]
+                                            .group,
+                                          false
+                                        );
+                                      }
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                </div>
+                              )
                             )
-                          )
+                          )}
+                        {setAsk && (
+                          <Textarea
+                            className="w-full mt-4"
+                            onChange={(e) => setAsk(e.target.value)}
+                            placeholder="Ingrese indicaciones adicionales para el administrador."
+                          />
                         )}
-                      {setAsk && (
-                        <Textarea
-                          className="w-full mt-4"
-                          onChange={(e) => setAsk(e.target.value)}
-                          placeholder="Ingrese indicaciones adicionales para el administrador."
-                        />
-                      )}
-                    </div>
+                      </div>
+                      <p>
+                        ¿Estás seguro de que deseas enviar la solicitud?, Hasta
+                        no aprobarse esta no podras enviar mas solicitudes,
+                        debes crear todas las peticiones en una misma solicitud.
+                        Por favor, revisa el resumen de los movimientos
+                        realizados. Ten en cuenta que el envío no garantiza que
+                        todas las peticiones serán aprobadas.
+                      </p>
+                    </>
                   ) : (
                     horario.length > 0 && (
                       <div>
@@ -464,11 +480,6 @@ export default function Calendario({
                       </div>
                     )
                   )}
-                  ¿Estás seguro de que deseas enviar la solicitud?, Hasta no
-                  aprobarse esta no podras enviar mas solicitudes, debes crear
-                  todas las peticiones en una misma solicitud. Por favor, revisa
-                  el resumen de los movimientos realizados. Ten en cuenta que el
-                  envío no garantiza que todas las peticiones serán aprobadas.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

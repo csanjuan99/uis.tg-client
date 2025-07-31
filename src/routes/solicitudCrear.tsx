@@ -30,8 +30,8 @@ const SolicitudCrearRoute = () => {
     },
     period: {
       year: 2025,
-      term: 2
-    }
+      term: 2,
+    },
   };
   const [solicitud, setSolicitud] = useState<Solicitud>(emptySolicitud);
   const [materias, setMaterias] = useState<Materia[]>([]);
@@ -127,7 +127,9 @@ const SolicitudCrearRoute = () => {
     return existingSchedule
       ? existingSchedule.some((existing) =>
           newSchedule?.some((newSlot) => {
+            // Verificar si el día coincide
             if (existing.day.toUpperCase() === newSlot.day.toUpperCase()) {
+              // Verificar si hay conflicto de tiempo
               return isTimeOverlap(existing.time, newSlot.time);
             }
             return false;
@@ -200,13 +202,24 @@ const SolicitudCrearRoute = () => {
     const hasMateria = horario.some((m) => m.sku === materia.sku);
     const isCurrentlySelected = isGroupSelected(materia.sku, group.sku);
     // Verificar conflictos con todas las materias en el horario
-    const hasConflict = horario.some(
-      (existingMateria) =>
+    const hasConflict = horario.some((existingMateria) => {
+      const lastGroup = existingMateria.group;
+
+      return (
         existingMateria.sku !== materia.sku &&
-        existingMateria.groups.some((existingGroup) =>
-          checkMateriaConflict(existingGroup.schedule, group.schedule)
-        )
-    );
+        existingMateria.groups.some((existingGroup) => {
+          // Si el grupo inicial cambiado abre espacio en el horario, no lo tiene en cuenta para la revisión de conflictos
+          if (
+            lastGroup &&
+            lastGroup.sku === existingGroup.sku &&
+            existingMateria.groups.length > 1
+          ) {
+            return;
+          }
+          return checkMateriaConflict(existingGroup.schedule, group.schedule);
+        })
+      );
+    });
 
     // Si el grupo ya está seleccionado, permitimos la deselección
     if (isCurrentlySelected) {
