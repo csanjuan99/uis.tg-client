@@ -38,12 +38,8 @@ import { X, ArrowUp, ArrowDown, ArrowUpDown, RefreshCcw } from "lucide-react";
 import { getShiftLabel, getStatusLabel } from "@/types/solicitudesTypes";
 import { SortingState } from "@/types/tableTypes";
 import { useAuth } from "@/providers/AuthContext.tsx";
-import { Shift, dayType } from "@/types/solicitudesTypes";
-
-interface Period {
-  year: number;
-  term: number;
-}
+import { Period } from "@/types/solicitudesTypes";
+import { Shift, dayType } from "@/types/userTypes";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

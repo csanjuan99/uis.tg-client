@@ -1,3 +1,5 @@
+import { dayType } from "./userTypes";
+
 // Tipos de datos
 export interface Solicitud {
   _id?: string;
@@ -52,19 +54,12 @@ export interface Solicitud {
   };
 }
 
-export type dayType =
-  | "MONDAY"
-  | "TUESDAY"
-  | "WEDNESDAY"
-  | "THURSDAY"
-  | "FRIDAY";
+export interface Period {
+  year: number;
+  term: number;
+}
 
 export type RequestStatus = "PENDING" | "APPROVED" | "REJECTED";
-
-export type Shift = {
-  day: dayType;
-  time: "AM" | "PM";
-};
 
 // Función para convertir UTC a hora colombiana
 export const convertToColombianTime = (utcDate: string): number => {
@@ -95,11 +90,11 @@ export const getShiftDate = (shift: {
   time: "AM" | "PM";
 }): string => {
   const dateMap: Record<dayType, string> = {
-    MONDAY: "2025-01-27",
-    TUESDAY: "2025-01-28",
-    WEDNESDAY: "2025-01-29",
-    THURSDAY: "2025-01-30",
-    FRIDAY: "2025-01-31",
+    MONDAY: "2025-07-28",
+    TUESDAY: "2025-07-29",
+    WEDNESDAY: "2025-07-30",
+    THURSDAY: "2025-07-31",
+    FRIDAY: "2025-08-01",
   };
 
   // Crear la fecha usando la zona horaria local

@@ -9,11 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sun, Moon } from "lucide-react";
-
-interface Shift {
-  day: string;
-  time: string;
-}
+import { Shift } from "@/types/userTypes";
 
 interface ShiftSelectorDialogProps {
   open: boolean;
@@ -58,7 +54,9 @@ export default function Franjas({
                           ? "default"
                           : "secondary"
                       }
-                      onClick={() => setShift({ day, time: "AM" })}
+                      onClick={() =>
+                        setShift({ day: day as Shift["day"], time: "AM" })
+                      }
                     >
                       <Sun className="mr-2 h-4 w-4" />
                       Mañana
@@ -70,7 +68,9 @@ export default function Franjas({
                           ? "default"
                           : "secondary"
                       }
-                      onClick={() => setShift({ day, time: "PM" })}
+                      onClick={() =>
+                        setShift({ day: day as Shift["day"], time: "PM" })
+                      }
                     >
                       <Moon className="mr-2 h-4 w-4" />
                       Tarde

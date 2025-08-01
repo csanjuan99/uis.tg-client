@@ -23,7 +23,8 @@ import { Pen, Moon, Sun } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "./ui/textarea";
 import { Materia } from "@/types/materiaTypes";
-import { dayType, getShiftLabel, Solicitud } from "@/types/solicitudesTypes";
+import { getShiftLabel, Solicitud } from "@/types/solicitudesTypes";
+import { dayType } from "@/types/userTypes";
 import { Trash2, Send, X, PlusCircle, MinusCircle, Repeat } from "lucide-react";
 import { useAuth } from "@/providers/AuthContext";
 import Franjas from "./franjas";
@@ -31,6 +32,7 @@ import Loader from "./loader";
 import { useToast } from "@/hooks/use-toast";
 import { useAxios } from "../providers/AxiosContext";
 import { AxiosInstance } from "axios";
+import { Shift } from "@/types/userTypes";
 
 interface CalendarioProps {
   horario: Materia[];
@@ -82,7 +84,7 @@ export default function Calendario({
   const userId = auth?.user?.id;
   const userShift = auth?.user?.shift || { day: "WEDNESDAY", time: "AM" };
   const [isLoading, setIsLoading] = useState(false);
-  const [shift, setShift] = useState<{ day: string; time: string }>(userShift);
+  const [shift, setShift] = useState<Shift>(userShift);
 
   useEffect(() => {
     setIsDialogOpen(!modalOpen || false);

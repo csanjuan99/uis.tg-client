@@ -1,7 +1,7 @@
 // hooks/usePersistentState.ts
 import { useState, useEffect } from "react";
 import { SortingState } from "../types/tableTypes";
-import { Shift } from "../types/solicitudesTypes";
+import { Shift } from "../types/userTypes";
 
 interface Period {
   year: number;

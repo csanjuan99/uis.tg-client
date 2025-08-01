@@ -23,7 +23,7 @@ import {
 import { buildFilterQuery } from "@/utils/filterQuery";
 import { Plus } from "lucide-react";
 import Loader from "@/components/loader";
-import { Shift } from "../types/solicitudesTypes";
+import { Shift } from "../types/userTypes";
 
 interface Period {
   year: number;

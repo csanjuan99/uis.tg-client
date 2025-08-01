@@ -1,10 +1,20 @@
+export type dayType =
+  | "MONDAY"
+  | "TUESDAY"
+  | "WEDNESDAY"
+  | "THURSDAY"
+  | "FRIDAY";
+
+export type Shift = {
+  day: dayType;
+  time: "AM" | "PM";
+  label?: string;
+};
+
 export interface UserType {
   _id?: string;
   id?: string;
-  shift?: {
-    day: dayType;
-    time: "AM" | "PM";
-  } | null;
+  shift?: Shift | null;
   name: string;
   lastname: string;
   identification?: string | null;
@@ -22,8 +32,6 @@ export interface UserType {
     new_pensum?: boolean;
   };
 }
-
-type dayType = "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY";
 
 // Función para obtener el color del usuario
 export const getUserColor = (kind: string): string => {
