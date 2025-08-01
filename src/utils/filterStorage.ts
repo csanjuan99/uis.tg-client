@@ -62,8 +62,8 @@ export function useFilterStorage() {
   const [sorting, setSorting] = usePersistentState<SortingState>(
     "solicitudes_sorting",
     {
-      sortBy: "",
-      sort: "asc",
+      sortBy: "createdAt",
+      sort: "desc",
     }
   );
 

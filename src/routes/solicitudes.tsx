@@ -71,16 +71,6 @@ const SolicitudRoute = () => {
     []
   );
 
-  useEffect(() => {
-    if (!kind) return;
-    if (kind === "ADMIN" || kind === "STUDENT") {
-      setSorting({ sortBy: "status", sort: "desc" });
-      setSelectedPeriods([{ year: 2025, term: 2 }]);
-    } else {
-      setSorting({ sortBy: "createdAt", sort: "desc" });
-    }
-  }, [kind]);
-
   const fetchSolicitudes = async (
     page: number,
     filter: string,
