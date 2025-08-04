@@ -299,6 +299,14 @@ export const calcularTiempoPromedioRespuesta = (
 ): number => {
   if (solicitudesAtendidas.length === 0) return 0;
 
+  const datosTabla: {
+    franja: string;
+    fechaInicioFranja: string;
+    createdAt: string;
+    updatedAt: string;
+    tiempoHoras: number;
+  }[] = [];
+
   const tiempoTotal = solicitudesAtendidas.reduce((acc, solicitud) => {
     if (
       !solicitud.createdAt ||
@@ -308,16 +316,35 @@ export const calcularTiempoPromedioRespuesta = (
       return acc;
     }
 
-    const shiftDate = new Date(getShiftDate(solicitud.student.shift));
+    let tiempo = 0;
+    const { fechaInicioFranja } = obtenerFechasFranja(solicitud.student.shift);
     const createdAt = new Date(solicitud.createdAt);
     const updatedAt = new Date(solicitud.updatedAt);
 
-    if (createdAt.getTime() >= shiftDate.getTime()) {
-      return acc + (updatedAt.getTime() - createdAt.getTime());
+    if (createdAt < fechaInicioFranja) {
+      tiempo = updatedAt.getTime() - fechaInicioFranja.getTime();
+      // En caso de que la franja sea incorrecta y de negativo, se calculo con cerated time
+      if (tiempo < 0) {
+        tiempo = updatedAt.getTime() - createdAt.getTime();
+      }
     } else {
-      return acc + (updatedAt.getTime() - shiftDate.getTime());
+      tiempo = updatedAt.getTime() - createdAt.getTime();
     }
+
+    const tiempoHoras = tiempo / 1000 / 60 / 60;
+
+    datosTabla.push({
+      franja: JSON.stringify(solicitud.student.shift),
+      fechaInicioFranja: fechaInicioFranja.toISOString(),
+      createdAt: createdAt.toISOString(),
+      updatedAt: updatedAt.toISOString(),
+      tiempoHoras: parseFloat(tiempoHoras.toFixed(2)),
+    });
+
+    return acc + tiempo;
   }, 0);
+
+  console.table(datosTabla);
 
   return tiempoTotal / solicitudesAtendidas.length / 1000 / 60 / 60;
 };

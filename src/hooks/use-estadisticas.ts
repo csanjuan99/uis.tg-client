@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-
 import { useAxios } from "../providers/AxiosContext";
 import { useToast } from "@/hooks/use-toast";
 import { buildFilterQuery } from "@/utils/filterQuery";
@@ -38,6 +37,13 @@ export const useEstadisticas = (selectedPeriods: Period[]) => {
         setIsLoading(true);
         const params = new URLSearchParams({
           filter: JSON.stringify(buildFilterQuery("", [], [], selectedPeriods)),
+          projection: JSON.stringify({
+            requests: 1,
+            status: 1,
+            student: 1,
+            updatedAt: 1,
+            createdAt: 1,
+          }),
         });
         const { data } = await axios.get(`/api/appeal`, { params });
 
