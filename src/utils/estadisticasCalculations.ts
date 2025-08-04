@@ -106,24 +106,15 @@ export const calcularSolicitudesPorIntentos = (
 };
 
 export const obtenerFechasFranja = (franja: Shift) => {
-  let fechaInicioFranja: Date, fechaFinFranja: Date;
+  const fechaInicioFranja = new Date(
+    getShiftDate({ day: franja.day, time: franja.time })
+  );
+  const fechaFinFranja = new Date(fechaInicioFranja);
 
-  if (franja.day === "MONDAY" && franja.time === "AM") {
-    const fechaViernes = new Date(getShiftDate({ day: "FRIDAY", time: "PM" }));
-    fechaInicioFranja = new Date(fechaViernes);
-    fechaInicioFranja.setDate(fechaInicioFranja.getDate() + 1);
-    fechaFinFranja = new Date(2099, 11, 31);
+  if (franja.time === "AM") {
+    fechaFinFranja.setHours(12, 0, 0, 0);
   } else {
-    fechaInicioFranja = new Date(
-      getShiftDate({ day: franja.day, time: franja.time })
-    );
-    fechaFinFranja = new Date(fechaInicioFranja);
-
-    if (franja.time === "AM") {
-      fechaFinFranja.setHours(12, 0, 0, 0);
-    } else {
-      fechaFinFranja.setHours(24, 0, 0, 0);
-    }
+    fechaFinFranja.setHours(18, 0, 0, 0);
   }
 
   return { fechaInicioFranja, fechaFinFranja };
@@ -226,21 +217,17 @@ export const calcularTiempoRespuestaFranja = (
 export const calcularSolicitudesPorFranja = (
   solicitudesAtendidas: Solicitud[]
 ): SolicitudesChart[] => {
+  const fechaMiercoles = new Date(
+    getShiftDate({ day: "WEDNESDAY", time: "AM" })
+  );
+  const fechaJueves = new Date(getShiftDate({ day: "THURSDAY", time: "AM" }));
+  const fechaViernes = new Date(getShiftDate({ day: "FRIDAY", time: "AM" }));
+  const fechaSabado = new Date(fechaViernes);
+  fechaSabado.setDate(fechaSabado.getDate() + 1);
+
   return FRANJAS_TOTALES.map((franja, index) => {
     const solicitudesFranja = solicitudesAtendidas.filter((solicitud) => {
       if (!solicitud.updatedAt) return false;
-
-      const fechaMiercoles = new Date(
-        getShiftDate({ day: "WEDNESDAY", time: "AM" })
-      );
-      const fechaJueves = new Date(
-        getShiftDate({ day: "THURSDAY", time: "AM" })
-      );
-      const fechaViernes = new Date(
-        getShiftDate({ day: "FRIDAY", time: "AM" })
-      );
-      const fechaSabado = new Date(fechaViernes);
-      fechaSabado.setDate(fechaSabado.getDate() + 1);
 
       const fechaUpdate = new Date(solicitud.updatedAt);
       let dia: dayType;
@@ -298,14 +285,9 @@ export const calcularTiempoPromedioRespuesta = (
   solicitudesAtendidas: Solicitud[]
 ): number => {
   if (solicitudesAtendidas.length === 0) return 0;
-
-  const datosTabla: {
-    franja: string;
-    fechaInicioFranja: string;
-    createdAt: string;
-    updatedAt: string;
-    tiempoHoras: number;
-  }[] = [];
+  const fechaViernes = new Date(getShiftDate({ day: "FRIDAY", time: "AM" }));
+  const fechaSabado = new Date(fechaViernes);
+  fechaSabado.setDate(fechaSabado.getDate() + 1);
 
   const tiempoTotal = solicitudesAtendidas.reduce((acc, solicitud) => {
     if (
@@ -317,34 +299,25 @@ export const calcularTiempoPromedioRespuesta = (
     }
 
     let tiempo = 0;
-    const { fechaInicioFranja } = obtenerFechasFranja(solicitud.student.shift);
     const createdAt = new Date(solicitud.createdAt);
     const updatedAt = new Date(solicitud.updatedAt);
+    const { fechaInicioFranja } =
+      fechaSabado > updatedAt
+        ? obtenerFechasFranja(solicitud.student.shift)
+        : obtenerFechasFranja({ day: "MONDAY", time: "AM" });
 
     if (createdAt < fechaInicioFranja) {
       tiempo = updatedAt.getTime() - fechaInicioFranja.getTime();
-      // En caso de que la franja sea incorrecta y de negativo, se calculo con cerated time
-      if (tiempo < 0) {
+      // En caso de que la franja sea incorrecta y de negativo, se calculo con created time
+      if (tiempo < 0 && fechaSabado > updatedAt && fechaSabado > createdAt) {
         tiempo = updatedAt.getTime() - createdAt.getTime();
       }
     } else {
       tiempo = updatedAt.getTime() - createdAt.getTime();
     }
 
-    const tiempoHoras = tiempo / 1000 / 60 / 60;
-
-    datosTabla.push({
-      franja: JSON.stringify(solicitud.student.shift),
-      fechaInicioFranja: fechaInicioFranja.toISOString(),
-      createdAt: createdAt.toISOString(),
-      updatedAt: updatedAt.toISOString(),
-      tiempoHoras: parseFloat(tiempoHoras.toFixed(2)),
-    });
-
     return acc + tiempo;
   }, 0);
-
-  console.table(datosTabla);
 
   return tiempoTotal / solicitudesAtendidas.length / 1000 / 60 / 60;
 };

@@ -90,8 +90,8 @@ export const getShiftDate = (shift: {
   time: "AM" | "PM";
 }): string => {
   const dateMap: Record<dayType, string> = {
-    MONDAY: "2025-07-28",
-    TUESDAY: "2025-07-29",
+    MONDAY: "2025-08-04",
+    TUESDAY: "2025-08-05",
     WEDNESDAY: "2025-07-30",
     THURSDAY: "2025-07-31",
     FRIDAY: "2025-08-01",
